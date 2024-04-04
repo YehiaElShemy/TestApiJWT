@@ -3,7 +3,6 @@
 namespace TestApiJWT.Models
 {
     [Owned]
-
     public class RefreshToken
     {
         public string? Token { get; set; }

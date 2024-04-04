@@ -25,7 +25,7 @@ namespace TestApiJWT.Controllers
 
             db = _db;
         }
-     
+        [Authorize(Roles = "User")]
         [HttpGet("allusers")]
         public async Task<IActionResult> index()
         {
