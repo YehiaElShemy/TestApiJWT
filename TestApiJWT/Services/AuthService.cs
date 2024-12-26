@@ -1,13 +1,8 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -71,7 +66,7 @@ namespace TestApiJWT.Services
         public async Task<AuthModel> GetTokenAsync(TokenRequestModel model)
         {
             AuthModel authModel = new AuthModel();
-            var user = await userManager.FindByEmailAsync(model.Email);
+            ApplicationUser user = await userManager.FindByEmailAsync(model.Email);
 
             if (user is null || !await userManager.CheckPasswordAsync(user, model.Password))
             {
@@ -81,6 +76,7 @@ namespace TestApiJWT.Services
             }
 
             var jwtSecurityToken = await CreateJwtToken(user);
+
             var rolesList = await userManager.GetRolesAsync(user);
             authModel.Message = "login Successfully";
             authModel.Email = user.Email;
@@ -110,9 +106,11 @@ namespace TestApiJWT.Services
         {
             var userClaims = await userManager.GetClaimsAsync(user);
             var roles = await userManager.GetRolesAsync(user);
+
             var rolesClaims = new List<Claim>();
             foreach (var role in roles)
                 rolesClaims.Add(new Claim("roles", role));
+
             var calims = new Claim[]
             {
                new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Sub,user.UserName),

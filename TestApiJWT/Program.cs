@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TestApiJWT.Helper;
@@ -15,6 +14,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllers();
+builder.Services.AddSingleton<MockUserService>();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseInMemoryDatabase("InMemoryDb"));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -33,12 +36,13 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["JWT:Issuser"],
         ValidAudience = builder.Configuration["JWT:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
-        ,ClockSkew=TimeSpan.Zero
+        ,
+        ClockSkew = TimeSpan.Zero
     };
 
 });
-      
-     
+
+
 
 
 
@@ -47,6 +51,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    DbInitializer.Initialize(context);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
