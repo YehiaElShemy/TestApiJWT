@@ -1,28 +1,24 @@
-{"users": [
+{
+  "users": [
     {
-      "id": 1,
-      "name": "John Doe",
-      "email": "john@example.com"
+      "Id": 0,
+      "Name": null,
+      "Email": null
     },
     {
-      "id": 2,
-      "name": "Jane Smith",
-      "email": "jane@example.com"
-    }
-
-  ],
-  "users2": [
-    {
-      "id": 1,
-      "name": "Yehia",
-      "email": "john@example.com"
+      "Id": 0,
+      "Name": null,
+      "Email": null
     },
     {
-      "id": 2,
-      "name": "Sayed",
-      "email": "jane@example.com"
+      "Id": 1,
+      "Name": "test1",
+      "Email": "test1"
+    },
+    {
+      "Id": 2,
+      "Name": "Yehia Mock",
+      "Email": "Yehia Mock"
     }
-
   ]
-
 }
